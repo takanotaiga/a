@@ -7,15 +7,28 @@ jobs:
   run-repository-dispatch:
     runs-on: ubuntu-latest
     steps:
-      - name: Curl Api
+      - name: Get Branch or PR Base
+        id: branch_info
+        run: |
+          if [[ "$GITHUB_EVENT_NAME" == "pull_request" ]]; then
+            echo "BRANCH_NAME=${{ github.event.pull_request.base.ref }}" >> $GITHUB_ENV
+            echo "REF_URL=${{ github.event.pull_request.html_url }}" >> $GITHUB_ENV
+          else
+            echo "BRANCH_NAME=${GITHUB_REF_NAME}" >> $GITHUB_ENV
+            echo "REF_URL=${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/tree/${GITHUB_REF_NAME}" >> $GITHUB_ENV
+          fi
+
+      - name: Curl API
         run: |
           TOKEN=${{ secrets.MY_PAT }}
           OWNER=${{ secrets.OWNER }}
           REPO=${{ secrets.TARGET_REPO }}
+          BRANCH=${{ env.BRANCH_NAME }}
+          REF_URL=${{ env.REF_URL }}
 
           curl \
             -X POST \
             -H "Authorization: token $TOKEN" \
             -H "Accept: application/vnd.github.v3+json" \
             https://api.github.com/repos/$OWNER/$REPO/dispatches \
-            -d '{"event_type":"on-demand-test","client_payload":{"ref": "main"}}'
+            -d "{\"event_type\":\"on-demand-test\",\"client_payload\":{\"ref\":\"$BRANCH\",\"ref_url\":\"$REF_URL\"}}"
