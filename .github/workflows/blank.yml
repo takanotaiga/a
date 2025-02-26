@@ -12,10 +12,10 @@ jobs:
         run: |
           if [[ "$GITHUB_EVENT_NAME" == "pull_request" ]]; then
             echo "BRANCH_NAME=${{ github.event.pull_request.base.ref }}" >> $GITHUB_ENV
-            echo "REF_URL=${{ github.event.pull_request.html_url }}" >> $GITHUB_ENV
+            echo "REPOSITORY_NAME=${{ github.event.pull_request.base.full_name }}" >> $GITHUB_ENV
           else
             echo "BRANCH_NAME=${GITHUB_REF_NAME}" >> $GITHUB_ENV
-            echo "REF_URL=${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/tree/${GITHUB_REF_NAME}" >> $GITHUB_ENV
+            echo "REPOSITORY_NAME=${GITHUB_REPOSITORY}" >> $GITHUB_ENV
           fi
 
       - name: Curl API
@@ -24,11 +24,11 @@ jobs:
           OWNER=${{ secrets.OWNER }}
           REPO=${{ secrets.TARGET_REPO }}
           BRANCH=${{ env.BRANCH_NAME }}
-          REF_URL=${{ env.REF_URL }}
+          REPOSITORY=${{ env.REPOSITORY_NAME }}
 
           curl \
             -X POST \
             -H "Authorization: token $TOKEN" \
             -H "Accept: application/vnd.github.v3+json" \
             https://api.github.com/repos/$OWNER/$REPO/dispatches \
-            -d "{\"event_type\":\"on-demand-test\",\"client_payload\":{\"ref\":\"$BRANCH\",\"ref_url\":\"$REF_URL\"}}"
+            -d "{\"event_type\":\"on-demand-test\",\"client_payload\":{\"ref\":\"$BRANCH\",\"repo\":\"$REPOSITORY\"}}"
