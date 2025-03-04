@@ -13,12 +13,17 @@ jobs:
         id: branch_info
         run: |
           if [[ "$GITHUB_EVENT_NAME" == "pull_request" ]]; then
-            echo "BRANCH_NAME=${{ github.event.pull_request.base.ref }}" >> $GITHUB_ENV
-            echo "REPOSITORY_NAME=${{ github.event.pull_request.base.full_name }}" >> $GITHUB_ENV
+            echo "BRANCH_NAME=${{ github.event.pull_request.head.ref }}" >> $GITHUB_ENV
+            echo "REPOSITORY_NAME=${{ github.event.pull_request.head.full_name }}" >> $GITHUB_ENV
           else
             echo "BRANCH_NAME=${GITHUB_REF_NAME}" >> $GITHUB_ENV
             echo "REPOSITORY_NAME=${GITHUB_REPOSITORY}" >> $GITHUB_ENV
           fi
+      - name: Print Send Data
+        run: |
+          echo "Send Event Data:"
+          echo "Branch: ${{ env.BRANCH_NAME }}"
+          echo "Repo: ${{ env.REPOSITORY_NAME }}"
 
       - name: Curl API
         run: |
