@@ -12,12 +12,13 @@ jobs:
       - name: Get Branch or PR Base
         id: branch_info
         run: |
+          echo "REPOSITORY_NAME=${GITHUB_REPOSITORY}" >> $GITHUB_ENV
           if [[ "$GITHUB_EVENT_NAME" == "pull_request" ]]; then
-            echo "BRANCH_NAME=${{ github.event.pull_request.head.ref }}" >> $GITHUB_ENV
-            echo "REPOSITORY_NAME=${{ github.event.pull_request.head.full_name }}" >> $GITHUB_ENV
+            echo "BRANCH_NAME=${{ github.event.pull_request.head.sha }}" >> $GITHUB_ENV
+            # echo "REPOSITORY_NAME=${{ github.event.pull_request.head.full_name }}" >> $GITHUB_ENV
           else
             echo "BRANCH_NAME=${GITHUB_REF_NAME}" >> $GITHUB_ENV
-            echo "REPOSITORY_NAME=${GITHUB_REPOSITORY}" >> $GITHUB_ENV
+            # echo "REPOSITORY_NAME=${GITHUB_REPOSITORY}" >> $GITHUB_ENV
           fi
       - name: Print Send Data
         run: |
