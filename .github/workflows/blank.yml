@@ -22,15 +22,14 @@ jobs:
 
       - name: Curl API
         run: |
-          TOKEN=${{ secrets.MY_PAT }}
-          OWNER=${{ secrets.OWNER }}
-          REPO=${{ secrets.TARGET_REPO }}
+          OWNER=takanotaiga
+          REPO=b
           BRANCH=${{ env.BRANCH_NAME }}
           REPOSITORY=${{ env.REPOSITORY_NAME }}
 
           curl \
             -X POST \
-            -H "Authorization: token $TOKEN" \
+            -H "Authorization: token ${{ secrets.MY_PAT }}" \
             -H "Accept: application/vnd.github.v3+json" \
             https://api.github.com/repos/$OWNER/$REPO/dispatches \
             -d "{\"event_type\":\"on-demand-test\",\"client_payload\":{\"ref\":\"$BRANCH\",\"repo\":\"$REPOSITORY\"}}"
