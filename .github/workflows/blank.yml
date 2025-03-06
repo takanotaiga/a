@@ -30,11 +30,11 @@ jobs:
       - name: Curl API
         run: |
           OWNER=takanotaiga
-          REPO=b
+          REPO=b_hoge
           BRANCH=${{ env.BRANCH_NAME }}
           REPOSITORY=${{ env.REPOSITORY_NAME }}
 
-          curl \
+          curl --fail \
             -X POST \
             -H "Authorization: token ${{ secrets.MY_PAT }}" \
             -H "Accept: application/vnd.github.v3+json" \
