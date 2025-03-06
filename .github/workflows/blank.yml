@@ -30,7 +30,7 @@ jobs:
       - name: Curl API
         run: |
           OWNER=takanotaiga
-          REPO=b_hoge
+          REPO=b
           BRANCH=${{ env.BRANCH_NAME }}
           REPOSITORY=${{ env.REPOSITORY_NAME }}
 
